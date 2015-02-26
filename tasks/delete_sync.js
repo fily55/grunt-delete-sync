@@ -5,9 +5,17 @@ module.exports = function(grunt) {
     
     this.files.map(function(file) {
       file.src.map(function (val) {
-        var targetFileName = file.cwd + '/' + val;
-        if(grunt.file.exists(targetFileName) && !grunt.file.exists(file.syncWith + '/' + val)) {
-          grunt.log.writeln('Deleting file ' + targetFileName);
+        var targetFileName = file.cwd + '/' + val,
+          fileDir;
+          
+        if (grunt.file.isFile(targetFileName)) {
+          fileDir = 'file';
+        } else if (grunt.file.isDir(targetFileName)) {
+          fileDir = 'dir';
+        }
+          
+        if(fileDir && !grunt.file.exists(file.syncWith + '/' + val)) {
+          grunt.log.writeln('Deleting '+fileDir+' ---> ' + targetFileName);
           grunt.file.delete(targetFileName, options);
         }
       });
